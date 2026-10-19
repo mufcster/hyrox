@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HYROX Helsinki 2027 – Training</title>
+<meta name="theme-color" content="#EDF1EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#142027" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HYROX">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1EE; --panel:#FFFFFF; --ink:#17262D; --muted:#5B6B70; --line:#D3DBD7;
+  --found:#5E8C6A; --build:#2D69A6; --spec:#B07A1E; --taper:#7457A0;
+  --done:#2F7D52; --accent:#2D69A6; --soft:#E3EAE6;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#142027; --panel:#1C2A32; --ink:#E6EEEA; --muted:#9DB0B3; --line:#2E3F47;
+    --found:#7FB08B; --build:#6AA2DB; --spec:#D9A24A; --taper:#A58BD0;
+    --done:#5BBF86; --accent:#6AA2DB; --soft:#24343C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#142027; --panel:#1C2A32; --ink:#E6EEEA; --muted:#9DB0B3; --line:#2E3F47;
+  --found:#7FB08B; --build:#6AA2DB; --spec:#D9A24A; --taper:#A58BD0;
+  --done:#5BBF86; --accent:#6AA2DB; --soft:#24343C;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{margin:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3,.cond{font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;letter-spacing:.01em}
+#scroller{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.wrap{max-width:680px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.top .right{text-align:right}
+.top h1{font-size:21px;margin:0;font-weight:700;line-height:1.15}
+@media (max-width:380px){.top h1{font-size:19px}}
+.count{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:15px;color:var(--muted);white-space:nowrap}
+.count b{font-size:22px;color:var(--ink);font-weight:700}
+.track{display:grid;grid-template-columns:repeat(26,1fr);gap:2px;margin-top:10px}
+.seg{height:24px;border-radius:2px;position:relative;background:var(--soft);border:0;padding:0;cursor:pointer;overflow:hidden}
+.seg .fill{position:absolute;left:0;bottom:0;width:100%;opacity:.9}
+.seg.cur{outline:2px solid var(--ink);outline-offset:1px}
+.seg.sel{box-shadow:inset 0 -3px 0 var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:11.5px;color:var(--muted);margin-top:6px;align-items:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+nav{flex:0 0 auto;position:relative;z-index:6;background:var(--panel);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav .in{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+nav button{background:none;border:0;color:var(--muted);font:600 11.5px "Barlow",system-ui,sans-serif;min-height:54px;padding:7px 2px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-selected="true"]{color:var(--accent)}
+section{display:none}
+section.on{display:block}
+.weekhead{margin:18px 0 6px}
+.weekhead h2{font-size:30px;margin:0;line-height:1.05}
+.meta{color:var(--muted);font-size:14px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;color:#fff;vertical-align:2px}
+.focus{background:var(--panel);border-left:4px solid var(--accent);padding:10px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+.weeknav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.btn{font:600 15px "Barlow",system-ui,sans-serif;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;cursor:pointer}
+.btn:disabled{opacity:.45}
+.btn:active:not(:disabled),.sess:active,.wk:active,.feel button:active{transform:scale(.98)}
+@media (prefers-reduced-motion:no-preference){.btn,.sess,.wk,.feel button{transition:transform .08s ease}}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn:focus-visible,nav button:focus-visible,.seg:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sess{display:grid;grid-template-columns:30px 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 12px;margin:8px 0;cursor:pointer}
+.sess.isdone{border-color:var(--done)}
+.sess.isdone .stitle{text-decoration:line-through;text-decoration-color:var(--muted)}
+.sess input[type=checkbox]{width:28px;height:28px;margin:0;accent-color:var(--done)}
+.stitle{font-weight:600}
+.sday{font-size:12px;color:var(--muted);margin-left:6px;font-weight:500}
+.sdesc{font-size:14.5px;color:var(--ink);margin-top:2px}
+.tag{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--muted);margin-left:6px;font-weight:600}
+.log{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:14px 0}
+.log h3,.card h3{margin:0 0 8px;font-size:19px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0}
+label.f{font-size:13px;color:var(--muted);display:block}
+input[type=text],input[type=number],textarea{font:400 16px "Barlow",system-ui,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;-webkit-appearance:none;appearance:none;min-height:44px}
+textarea{min-height:64px;resize:vertical}
+.feel{display:flex;gap:6px}
+.feel button{width:44px;height:44px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 15px "Barlow",sans-serif;cursor:pointer}
+.feel button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:12.5px}
+td input{min-width:76px;padding:7px 6px}
+.wk{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;color:var(--ink);font:inherit}
+.wk .n{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:22px;font-weight:700}
+.wk .p{font-size:13px;color:var(--muted)}
+.wk .prog{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.wk.current{background:var(--soft);border-radius:6px}
+.chk{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start;min-height:44px}
+.chk input{width:24px;height:24px;margin:0;accent-color:var(--done)}
+.chk .d{font-size:12.5px;color:var(--muted)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:10px 0;padding:0 12px}
+summary{cursor:pointer;padding:13px 0;min-height:44px;list-style-position:inside;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:19px;font-weight:600}
+details > div{padding-bottom:12px}
+ul{padding-left:18px;margin:6px 0}
+li{margin:3px 0}
+.note{font-size:13px;color:var(--muted)}
+.status{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.target{font-size:12px;color:var(--muted)}
+#copybox,#restoreBox{display:none;margin-top:8px}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+h2.sec{font-size:26px;margin:18px 0 4px}
+</style>
+</head>
+<body>
+<div id="scroller"><div class="wrap">
+<header>
+  <div class="top">
+    <h1>HYROX Helsinki 2027</h1>
+    <div class="right"><div class="count" id="count"></div><div class="status" id="saveStatus" role="status" aria-live="polite"></div></div>
+  </div>
+  <div class="track" id="track" role="group" aria-label="26-week plan"></div>
+</header>
+
+<section id="t-week" class="on">
+  <div class="weekhead">
+    <h2 id="wTitle"></h2>
+    <div class="meta" id="wMeta"></div>
+  </div>
+  <div class="focus" id="wFocus"></div>
+  <div id="wSessions"></div>
+  <div class="log">
+    <h3>Week log</h3>
+    <div class="row">
+      <div style="flex:1;min-width:120px"><label class="f" for="logKm">Actual running km</label><input type="number" inputmode="decimal" id="logKm" placeholder="e.g. 16"></div>
+      <div><label class="f">How the week felt (1 = wrecked, 5 = great)</label><div class="feel" id="feel"></div></div>
+    </div>
+    <label class="f" for="logNote">Notes (niggles, missed sessions, paces, anything odd)</label>
+    <textarea id="logNote"></textarea>
+  </div>
+  <div class="weeknav">
+    <button class="btn" id="prevW">Previous week</button>
+    <button class="btn" id="todayW">This week</button>
+    <button class="btn" id="nextW">Next week</button>
+  </div>
+</section>
+
+<section id="t-plan">
+  <h2 class="sec">All 26 weeks</h2>
+  <div class="legend">
+    <span><i style="background:var(--found)"></i>Foundation</span>
+    <span><i style="background:var(--build)"></i>Build</span>
+    <span><i style="background:var(--spec)"></i>Specific</span>
+    <span><i style="background:var(--taper)"></i>Taper and race</span>
+  </div>
+  <p class="note">Tap a week to open it. Lighter weeks cut volume about 25–30%.</p>
+  <div id="planList"></div>
+</section>
+
+<section id="t-data">
+  <h2 class="sec">Data I need from you</h2>
+  <p class="note">Tick items off as you do them and type results straight into the table. When a block is done, tap “Copy results” and paste them into our chat so I can update paces, loads and the race goal.</p>
+  <div class="card"><h3>Test schedule</h3><div id="dataPlan"></div></div>
+  <div class="card"><h3>Test results</h3><div class="tbl"><table id="testTbl"></table></div>
+    <p class="note">Times as mm:ss (or h:mm:ss). Strength as kg for 5 clean reps. Test rested; stop a lift when form breaks.</p></div>
+  <div class="card"><h3>Background questions</h3><div id="infoQs"></div></div>
+  <div class="card">
+    <button class="btn primary" id="copyBtn">Copy results for Claude</button>
+    <span class="note" id="copyMsg"></span>
+    <textarea id="copybox" readonly aria-label="Results summary to paste into chat"></textarea>
+  </div>
+  <div class="card">
+    <h3>Backup and restore</h3>
+    <p class="note">Your ticks and results are saved automatically. A backup lets you move them to another browser or a home-screen copy of the app.</p>
+    <div class="btnrow"><button class="btn" id="backupBtn">Copy backup</button><button class="btn" id="restoreOpen">Restore from backup</button></div>
+    <span class="note" id="backupMsg"></span>
+    <textarea id="restoreBox" aria-label="Paste a backup here" placeholder="Paste a backup here, then tap Restore"></textarea>
+    <button class="btn primary" id="restoreBtn" style="display:none;margin-top:8px">Restore</button>
+  </div>
+</section>
+
+<section id="t-guide">
+  <h2 class="sec">How to do the sessions</h2>
+  <div id="guide"></div>
+</section>
+
+<section id="t-race">
+  <h2 class="sec">Race day</h2>
+  <div id="race"></div>
+</section>
+</div></div>
+
+<nav><div class="in" role="tablist">
+  <button role="tab" data-t="t-week" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Week</span></button>
+  <button role="tab" data-t="t-plan" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg><span>Plan</span></button>
+  <button role="tab" data-t="t-data" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Data</span></button>
+  <button role="tab" data-t="t-guide" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><span>Guide</span></button>
+  <button role="tab" data-t="t-race" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span>Race</span></button>
+</div></nav>
+
+<script>
+(function(){
+"use strict";
+var START = new Date(2026,9,19); // Mon 19 Oct 2026
+var RACE = new Date(2027,3,16);
+var PH = {F:{name:"Foundation",c:"var(--found)"},B:{name:"Build",c:"var(--build)"},S:{name:"Specific",c:"var(--spec)"},T:{name:"Taper and race",c:"var(--taper)"}};
+
+var BTXT = {
+  F:"Pull-ups or lat pulldown 3 × 8–10, deadlift 3 × 6–8, bench or dumbbell press 3 × 8–10, overhead press 3 × 8, one-arm row 3 × 10, split squat 3 × 8 per leg, farmers carry 3 × 40 m, 5–8 min core.",
+  B:"Pull-ups 4 × 5–6 (weighted when 10 are clean), deadlift 4 × 4–6, bench 4 × 5–6, overhead press 4 × 6, row 4 × 8, front or split squat 3 × 6, heavier farmers carry 4 × 40 m, anti-rotation core.",
+  S:"Pull-ups 3 × 5, deadlift 3 × 3–5, bench 3 × 5, overhead press 3 × 5, row 3 × 8, split squat 2 × 8 per leg, race-weight carries after short runs, 5 min core.",
+  T:"Short version: 2–3 sets of the main pull, push and hinge at moderate weight. Nothing to failure."
+};
+var ETXT = "30–40 min easy run (about 7:30–8:00/km) plus 10–15 min mobility, or an Engine or Core & Mobility class. Skip it when tired.";
+
+// n, phase, km, light, focus, A, C, Dmin
+var W = [
+ [1,"F",14,0,"Baseline test week. Spread the tests out, keep everything else easy.",null,null,null],
+ [2,"F",16,0,"Station technique week.","6 × 2 min brisk (about 6:15–6:30/km), 2 min easy jog between. 10 min easy before and after.","Technique on every station at light load: SkiErg, sled push and pull, row, wall balls, lunges. Foundational class is ideal.",40],
+ [3,"F",18,0,"More tempo time, first light sled work.","6 × 3 min brisk, 2 min easy jog between.","Technique plus 4 × 25 m sled push at about 50% load and 4 × 250 m SkiErg.",50],
+ [4,"F",14,1,"Lighter week: let the body catch up.","4 × 2 min brisk, relaxed.","Technique only, light loads, no fatigue.",40],
+ [5,"F",19,0,"Tempo blocks and first run-plus-station rounds.","4 × 5 min tempo (6:15–6:30/km), 2 min jog.","5 rounds: 500 m run + one station at light load (rotate stations).",55],
+ [6,"F",21,0,"Heavier carries and sled pulls; strength weights up.","4 × 5 min tempo, 90 s jog.","5 rounds: 500 m run + farmers carry or sled pull at moderate load.",60],
+ [7,"F",23,0,"Longest tempo of the phase.","3 × 8 min tempo, 2 min jog.","8 rounds: 400 m run + station at about 70% of race load.",65],
+ [8,"F",17,1,"Lighter week with Checkpoint 1.","5K time trial (checkpoint).","Benchmarks: 100 wall balls for time and 50 m sled push; record both.",45],
+ [9,"B",24,0,"1 km repeats and first full 1 km runs after stations.","5 × 1 km at about 5:55–6:05/km, 90 s jog.","4 rounds: 1 km run + station at 70–80% of race load.",70],
+ [10,"B",26,0,"Christmas week. Keep A and D; one strength session is enough.","5 × 1 km at 5:55–6:05/km.","4–5 rounds: 1 km run + station.",70],
+ [11,"B",28,0,"Biggest week of the block; heavy upper-body block begins.","6 × 1 km at 5:55–6:05/km, 90 s jog.","5 rounds: 1 km run + station at about 80% load.",80],
+ [12,"B",21,1,"Lighter week: mobility and technique.","4 × 1 km relaxed.","Light technique, all stations.",60],
+ [13,"B",29,0,"Longer threshold blocks.","3 × 2 km at about 6:05–6:15/km, 2 min jog.","6 rounds: 1 km run + station.",80],
+ [14,"B",31,0,"Long run with a steady finish; heavy sled and carries.","3 × 2 km at 6:05–6:15/km.","Heavy sled push and pull plus 2 × 24–32 kg carries, intervals with short runs.",85],
+ [15,"B",33,0,"First taste of all eight stations in one session.","6 × 1 km at about 5:50–6:00/km, 90 s jog.","All 8 stations at about 50% volume, 500 m–1 km run between.",85],
+ [16,"B",24,1,"Lighter week with Checkpoint 2.","10K time trial (checkpoint).","Station benchmarks: 1,000 m SkiErg, 1,000 m row, 50 m sled push, 100 wall balls.",60],
+ [17,"S",32,0,"Half simulation: 4 runs + 4 stations at your doubles share.","6 × 1 km at 5:50–6:00/km.","HALF SIMULATION: runs 1–4 and stations 1–4 at race load and your planned share. Record splits.",75],
+ [18,"S",34,0,"Race-pace running; wall ball and lunge fatigue.","8 × 1 km at race pace (about 6:15–6:30/km), 60 s rest.","Lunges and wall balls after 1 km runs, 4 rounds.",80],
+ [19,"S",36,0,"Peak week.","8 × 1 km at race pace, 60 s rest.","Sled, carry and wall ball circuit with 1 km runs.",90],
+ [20,"S",26,1,"Lighter week before the full simulation.","5 × 1 km at race pace.","Light technique.",60],
+ [21,"S",35,0,"Full simulation, ideally with your partner.","4 × 1 km at race pace, easy otherwise.","FULL SIMULATION: all 8 runs and your share of every station. Practise fuelling and transitions. Record splits.",70],
+ [22,"S",32,0,"Fix whatever the simulation exposed.","3 × 2 km at race pace, 2 min jog.","Target your weakest 2–3 stations, each after a 1 km run.",80],
+ [23,"S",30,0,"Final sharpener.","6 × 1 km at race pace.","4 stations + 4 runs at race pace.",75],
+ [24,"T",24,0,"Volume cut about 25%, intensity kept. Confirm race plan with partner.","5 × 1 km at race pace.","3–4 stations at race pace, short runs between.",60],
+ [25,"T",16,0,"Short, sharp sessions only. Practise race fuel and sleep.","4 × 1 km at race pace plus strides.","Light touch: 2–3 stations, low volume.",45],
+ [26,"T",10,0,"Race week. Fresh legs beat extra fitness now.",null,null,null]
+];
+var W1S = [
+ {k:"t1",t:"5K time trial",d:"Mon",x:"Flat route, rested, hardest steady pace you can hold. Wear a watch and note average and max heart rate.",ess:1},
+ {k:"t2",t:"Deadlift and bench 5RM",d:"Wed",x:"3–4 ramp-up sets, then the heaviest weight for 5 clean reps. Spotter or safety bars on bench.",ess:1},
+ {k:"t3",t:"Squat 5RM and pull-ups",d:"Fri",x:"Squat 5RM with safety bars; then strict pull-ups to failure (or heaviest lat pulldown for 8).",ess:1},
+ {k:"t4",t:"Station benchmarks",d:"Sat or Sun",x:"1,000 m SkiErg, 1,000 m row, 50 m sled push (write down the real sled load), 100 wall balls at 6 kg with rests allowed. Rest well between.",ess:1},
+ {k:"t5",t:"Body composition scan",d:"any morning",x:"Bodymaja or similar: morning, fasted, no hard training the day before.",ess:0},
+ {k:"E",t:"Easy run",d:"optional",x:"20–30 min very easy if you feel good. Skip it the day before a test.",ess:0}
+];
+var W26S = [
+ {k:"a1",t:"Activation run",d:"Tue",x:"20 min easy, 4 × 1 min at race pace, 4 strides.",ess:1},
+ {k:"a2",t:"Activation and stations",d:"Thu",x:"15 min easy, 2 short station touches (e.g. 250 m SkiErg, 10 wall balls), strides. Done in 30 min.",ess:1},
+ {k:"rest",t:"Rest day before race",d:"day before",x:"Walk, eat carbohydrate-rich meals, lay out kit, early night.",ess:1},
+ {k:"race",t:"RACE: HYROX Helsinki Doubles",d:"16–18 Apr",x:"Follow the Race tab: warm-up, pacing, split plan, fuel.",ess:1}
+];
+
+function weekSessions(w){
+  var n=w[0];
+  if(n===1) return W1S;
+  if(n===26) return W26S;
+  return [
+    {k:"B",t:"Strength",d:"Mon",x:BTXT[w[1]]+(w[3]?" Lighter week: drop one set per exercise.":""),ess:1,cls:"Strength class or gym"},
+    {k:"A",t:"Run quality",d:"Tue",x:w[5],ess:1,cls:"Run class or solo"},
+    {k:"C",t:"HYROX-specific",d:"Thu",x:w[6],ess:1,cls:"Foundational / Power class or solo"},
+    {k:"D",t:"Long easy run",d:"Sat or Sun",x:w[7]+" min at conversational pace (about 7:30–8:00/km)"+(n===14?", last 15 min steady (about 7:00–7:15/km).":". Walk breaks are fine."),ess:1,cls:"Outdoors"},
+    {k:"E",t:"Easy run and mobility",d:"Wed or Fri",x:ETXT,ess:0,cls:"Engine or Core & Mobility class"}
+  ];
+}
+
+var TESTS = [
+ {id:"5k",l:"5K time trial",t:"Under 26:30 by wk 16",w:[1,8,16]},
+ {id:"5khr",l:"5K avg / max HR",t:"",w:[1,8,16]},
+ {id:"10k",l:"10K time trial",t:"Under 1:03:00",w:[16]},
+ {id:"dl",l:"Deadlift 5RM (kg)",t:"100–110",w:[1,8,16]},
+ {id:"bp",l:"Bench 5RM (kg)",t:"About 80",w:[1,8,16]},
+ {id:"sq",l:"Squat 5RM (kg)",t:"",w:[1,8,16]},
+ {id:"pu",l:"Strict pull-ups",t:"8",w:[1,8,16]},
+ {id:"ski",l:"1,000 m SkiErg",t:"Improve 5–8%",w:[1,8,16]},
+ {id:"row",l:"1,000 m row",t:"Improve 5–8%",w:[1,8,16]},
+ {id:"sled",l:"50 m sled push",t:"",w:[1,8,16]},
+ {id:"sledkg",l:"Sled load used (kg)",t:"Race: 152",w:[1,8,16]},
+ {id:"wb",l:"100 wall balls",t:"Under 6:00",w:[1,8,16]},
+ {id:"wt",l:"Body weight (kg)",t:"Stable",w:[1,8,16]},
+ {id:"bf",l:"Body fat % (scan)",t:"",w:[1,16]},
+ {id:"mm",l:"Muscle mass kg (scan)",t:"",w:[1,16]},
+ {id:"rhr",l:"Resting HR",t:"",w:[1,8,16]}
+];
+var INFO = [
+ {id:"km",q:"How many km a week did you run over the last month?"},
+ {id:"typ",q:"What did a normal week look like over the last month (sessions, which classes)?"},
+ {id:"sched",q:"Which class times do you use, and which days can you not train?"},
+ {id:"partner",q:"Can your partner train with you, and does he know his 5K time?"},
+ {id:"limit",q:"What limited you in the tests (grip, shoulders, breathing, legs)?"},
+ {id:"heat",q:"Which day is your doubles heat (once the schedule is out)?"},
+ {id:"gear",q:"Real sled weight at the gym, and which sandbag and kettlebell weights are available?"},
+ {id:"budget",q:"Any budget limit for extras (coaching, race simulation day)?"}
+];
+var DPLAN = [
+ {id:"d1",t:"Mon 19 Oct",x:"5K time trial, with heart rate"},
+ {id:"d2",t:"Wed 21 Oct",x:"Deadlift and bench 5RM"},
+ {id:"d3",t:"Fri 23 Oct",x:"Squat 5RM and max strict pull-ups"},
+ {id:"d4",t:"Sat 24 – Sun 25 Oct",x:"Station benchmarks (SkiErg, row, sled push, wall balls)"},
+ {id:"d5",t:"Week 1, any morning",x:"Body composition scan, fasted"},
+ {id:"d6",t:"By Sun 25 Oct",x:"Answer the background questions below and send me week 1 results"},
+ {id:"d7",t:"Every Sunday",x:"Fill in the week log (actual km, feel, notes)"},
+ {id:"d8",t:"7–13 Dec (week 8)",x:"Checkpoint 1: 5K, 5RM deadlift and bench, pull-ups, wall balls, sled push"},
+ {id:"d9",t:"1–7 Feb (week 16)",x:"Checkpoint 2: 10K, strength retest, all station benchmarks, second scan"},
+ {id:"d10",t:"Weeks 17, 21, 23",x:"Simulations: write down every run and station split"},
+ {id:"d11",t:"Before week 12",x:"Agree the station split with your partner and check the official doubles rules"}
+];
+
+var state = {done:{},tests:{},log:{},info:{},dp:{},race:{}};
+var KEY="hyrox-hel-2027-state";
+var docRef=null, saveTimer=null;
+try{var ls=localStorage.getItem(KEY); if(ls){state=Object.assign(state,JSON.parse(ls));}}catch(e){}
+
+function setStatus(t){document.getElementById("saveStatus").textContent=t;}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+  if(!docRef){setStatus("Saved");return;}
+  clearTimeout(saveTimer);
+  setStatus("Saving…");
+  saveTimer=setTimeout(function(){
+    saveTimer=null;
+    docRef.set(JSON.parse(JSON.stringify(state))).then(function(){setStatus("Synced");},function(){setStatus("Saved here only");});
+  },700);
+}
+
+function flush(){
+  if(docRef&&saveTimer){clearTimeout(saveTimer);saveTimer=null;docRef.set(JSON.parse(JSON.stringify(state))).catch(function(){});}
+}
+function toTop(){var sc=document.getElementById("scroller"); if(sc)sc.scrollTop=0;}
+function wkIndexToday(){
+  var now=new Date(); now.setHours(0,0,0,0);
+  var i=Math.floor((now-START)/(7*864e5))+1;
+  return Math.max(1,Math.min(26,i));
+}
+var cur=wkIndexToday(), sel=cur;
+function wDate(n){var d=new Date(START); d.setDate(d.getDate()+7*(n-1)); return d;}
+function fmt(d){return d.toLocaleDateString("en-GB",{day:"numeric",month:"short"});}
+function wkDone(n){var s=weekSessions(W[n-1]);var c=0,e=0;s.forEach(function(x){if(x.ess){e++; if(state.done["w"+n+"-"+x.k])c++;}});return [c,e];}
+
+function el(tag,attrs,text){var e=document.createElement(tag); if(attrs)for(var k in attrs){if(k==="cls")e.className=attrs[k];else e.setAttribute(k,attrs[k]);} if(text!=null)e.textContent=text; return e;}
+
+function renderCount(){
+  var now=new Date(); now.setHours(0,0,0,0);
+  var d=Math.ceil((RACE-now)/864e5);
+  var c=document.getElementById("count"); c.textContent="";
+  if(d>0){c.appendChild(el("b",null,String(d))); c.appendChild(document.createTextNode(" days to go"));}
+  else if(d>=-2){c.appendChild(el("b",null,"Race weekend"));}
+  else c.textContent="Race done";
+}
+function renderTrack(){
+  var t=document.getElementById("track"); t.textContent="";
+  W.forEach(function(w){
+    var n=w[0], dn=wkDone(n);
+    var b=el("button",{cls:"seg"+(n===cur?" cur":"")+(n===sel?" sel":""),"aria-label":"Week "+n+", "+PH[w[1]].name+", "+dn[0]+" of "+dn[1]+" key sessions done"});
+    var f=el("span",{cls:"fill"}); f.style.background=PH[w[1]].c;
+    f.style.height=(dn[1]?Math.max(18,Math.round(100*dn[0]/dn[1])):18)+"%";
+    if(w[3]) f.style.opacity=".55";
+    b.appendChild(f);
+    b.addEventListener("click",function(){sel=n;show("t-week");renderAll();});
+    t.appendChild(b);
+  });
+}
+function renderWeek(){
+  var w=W[sel-1], ph=PH[w[1]];
+  document.getElementById("wTitle").textContent="Week "+sel;
+  var m=document.getElementById("wMeta"); m.textContent="";
+  var p=el("span",{cls:"pill"},ph.name); p.style.background=ph.c; m.appendChild(p);
+  if(sel===cur){var tw=el("span",{cls:"pill"},"This week"); tw.style.background="var(--ink)"; tw.style.color="var(--bg)"; tw.style.marginLeft="6px"; m.appendChild(tw);}
+  m.appendChild(document.createTextNode("  Starts "+fmt(wDate(sel))+" · about "+w[2]+" km running"+(w[3]?" · lighter week":"")));
+  var f=document.getElementById("wFocus"); f.textContent=w[4]; f.style.borderLeftColor=ph.c;
+  var box=document.getElementById("wSessions"); box.textContent="";
+  weekSessions(w).forEach(function(s){
+    var key="w"+sel+"-"+s.k, on=!!state.done[key];
+    var card=el("label",{cls:"sess"+(on?" isdone":"")});
+    var cb=el("input",{type:"checkbox",id:"cb-"+key,"aria-label":"Done: "+s.t}); cb.checked=on;
+    cb.addEventListener("change",function(){if(cb.checked)state.done[key]=1;else delete state.done[key]; save(); renderAll();});
+    var body=el("div");
+    var lab=el("span",{cls:"stitle"},s.t);
+    body.appendChild(lab);
+    body.appendChild(el("span",{cls:"sday"},s.d));
+    if(!s.ess) body.appendChild(el("span",{cls:"tag"},"optional"));
+    body.appendChild(el("div",{cls:"sdesc"},s.x));
+    if(s.cls) body.appendChild(el("div",{cls:"note"},s.cls));
+    card.appendChild(cb); card.appendChild(body); box.appendChild(card);
+  });
+  var lg=state.log["w"+sel]||{};
+  var km=document.getElementById("logKm"); km.value=lg.km||"";
+  var nt=document.getElementById("logNote"); nt.value=lg.note||"";
+  var fe=document.getElementById("feel"); fe.textContent="";
+  [1,2,3,4,5].forEach(function(v){
+    var b=el("button",{"aria-pressed":String(lg.feel===v),"aria-label":"Feel "+v},String(v));
+    b.addEventListener("click",function(){var L=state.log["w"+sel]||(state.log["w"+sel]={});L.feel=(L.feel===v?undefined:v);save();renderWeek();});
+    fe.appendChild(b);
+  });
+  document.getElementById("prevW").disabled=sel<=1;
+  document.getElementById("nextW").disabled=sel>=26;
+}
+document.getElementById("logKm").addEventListener("input",function(e){var L=state.log["w"+sel]||(state.log["w"+sel]={});L.km=e.target.value;save();});
+document.getElementById("logNote").addEventListener("input",function(e){var L=state.log["w"+sel]||(state.log["w"+sel]={});L.note=e.target.value;save();});
+document.getElementById("prevW").addEventListener("click",function(){if(sel>1){sel--;renderAll();toTop();}});
+document.getElementById("nextW").addEventListener("click",function(){if(sel<26){sel++;renderAll();toTop();}});
+document.getElementById("todayW").addEventListener("click",function(){sel=cur;renderAll();toTop();});
+
+function renderPlan(){
+  var box=document.getElementById("planList"); box.textContent="";
+  W.forEach(function(w){
+    var n=w[0], dn=wkDone(n);
+    var b=el("button",{cls:"wk"+(n===cur?" current":"")});
+    var nn=el("span",{cls:"n"},String(n)); nn.style.color=PH[w[1]].c;
+    var mid=el("span"); mid.appendChild(el("div",null,w[4]));
+    mid.appendChild(el("div",{cls:"p"},fmt(wDate(n))+" · "+PH[w[1]].name+" · about "+w[2]+" km"+(w[3]?" · lighter":"")));
+    b.appendChild(nn); b.appendChild(mid); b.appendChild(el("span",{cls:"prog"},dn[0]+"/"+dn[1]));
+    b.addEventListener("click",function(){sel=n;show("t-week");renderAll();toTop();});
+    box.appendChild(b);
+  });
+}
+
+function renderData(){
+  var dp=document.getElementById("dataPlan"); dp.textContent="";
+  DPLAN.forEach(function(it){
+    var r=el("div",{cls:"chk"});
+    var cb=el("input",{type:"checkbox",id:"dp-"+it.id}); cb.checked=!!state.dp[it.id];
+    cb.addEventListener("change",function(){if(cb.checked)state.dp[it.id]=1;else delete state.dp[it.id];save();});
+    var l=el("label",{"for":"dp-"+it.id}); l.appendChild(el("div",{cls:"d"},it.t)); l.appendChild(el("div",null,it.x));
+    r.appendChild(cb); r.appendChild(l); dp.appendChild(r);
+  });
+  var tb=document.getElementById("testTbl"); tb.textContent="";
+  var thead=el("thead"), hr=el("tr");
+  ["Test","Wk 1","Wk 8","Wk 16","Target"].forEach(function(h){hr.appendChild(el("th",null,h));});
+  thead.appendChild(hr); tb.appendChild(thead);
+  var tbody=el("tbody");
+  TESTS.forEach(function(t){
+    var tr=el("tr"); tr.appendChild(el("td",null,t.l));
+    [1,8,16].forEach(function(wk){
+      var td=el("td");
+      if(t.w.indexOf(wk)>=0){
+        var inp=el("input",{type:"text","aria-label":t.l+" week "+wk}); inp.value=state.tests[t.id+"@"+wk]||"";
+        inp.addEventListener("input",function(){state.tests[t.id+"@"+wk]=inp.value;save();});
+        td.appendChild(inp);
+      } else td.textContent="";
+      tr.appendChild(td);
+    });
+    tr.appendChild(el("td",{cls:"target"},t.t));
+    tbody.appendChild(tr);
+  });
+  tb.appendChild(tbody);
+  var iq=document.getElementById("infoQs"); iq.textContent="";
+  INFO.forEach(function(q){
+    var l=el("label",{cls:"f","for":"iq-"+q.id},q.q); l.style.marginTop="8px";
+    var ta=el("textarea",{id:"iq-"+q.id}); ta.style.minHeight="44px"; ta.value=state.info[q.id]||"";
+    ta.addEventListener("input",function(){state.info[q.id]=ta.value;save();});
+    iq.appendChild(l); iq.appendChild(ta);
+  });
+}
+document.getElementById("copyBtn").addEventListener("click",function(){
+  var lines=["HYROX results update ("+new Date().toLocaleDateString("en-GB")+")",""];
+  [1,8,16].forEach(function(wk){
+    var any=TESTS.filter(function(t){return state.tests[t.id+"@"+wk];});
+    if(any.length){lines.push("Week "+wk+" tests:"); any.forEach(function(t){lines.push("- "+t.l+": "+state.tests[t.id+"@"+wk]);}); lines.push("");}
+  });
+  var qs=INFO.filter(function(q){return state.info[q.id];});
+  if(qs.length){lines.push("Background:"); qs.forEach(function(q){lines.push("- "+q.q+" "+state.info[q.id]);}); lines.push("");}
+  var logs=Object.keys(state.log).sort(function(a,b){return +a.slice(1)-+b.slice(1);}).filter(function(k){var L=state.log[k];return L&&(L.km||L.feel||L.note);});
+  if(logs.length){lines.push("Week logs:"); logs.forEach(function(k){var L=state.log[k], dn=wkDone(+k.slice(1)); lines.push("- Week "+k.slice(1)+": "+dn[0]+"/"+dn[1]+" key sessions"+(L.km?", "+L.km+" km":"")+(L.feel?", feel "+L.feel+"/5":"")+(L.note?", "+L.note:""));});}
+  var txt=lines.join("\n");
+  var box=document.getElementById("copybox"), msg=document.getElementById("copyMsg");
+  box.value=txt; box.style.display="block"; box.style.minHeight="160px";
+  var ok=function(){msg.textContent=" Copied. Paste it into our chat.";};
+  var manual=function(){box.focus();box.select();msg.textContent=" Select the text below and copy it.";};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,manual);}else manual();
+});
+
+function renderGuide(){
+  var g=document.getElementById("guide"); g.textContent="";
+  var sections=[
+   ["Running paces (reset at each checkpoint)",[
+     ["table",[["Effort","Feel","Pace"],["Easy","Full sentences","7:30–8:00/km"],["Steady","Comfortable, purposeful","7:00–7:15/km"],["Tempo","Short sentences","6:15–6:30/km"],["Interval","Hard, 1 km repeats","5:50–6:00/km"],["Race pace","Goal B","6:25–6:40/km"]]],
+     ["ul",["Add 4–6 × 20 s relaxed strides after one easy run a week.","Cadence about 170–180 steps/min, landing under the hips.","After a station: run the first 200–300 m at the pace you can hold for the whole km."]]]],
+   ["Station progressions",[
+     ["table",[["Station","Phase 1","Phase 2","Phase 3"],["SkiErg","4 × 250 m easy-mod","4 × 500 m target pace","1,000 m after a run"],["Sled push","4 × 25 m at 50%","4 × 25 m at 152 kg","2 × 25 m after 1 km"],["Sled pull","4 × 25 m light","4 × 25 m at 80–100%","2 × 25 m tired grip"],["Burpee broad jumps","4 × 10 m","4 × 20 m","40 m then run"],["Row","4 × 250 m","2 × 500 m target","1,000 m after a run"],["Farmers carry","4 × 50 m, 2 × 20 kg","4 × 50 m, 2 × 24 kg+","100 m unbroken"],["Sandbag lunges","4 × 25 m, 10–15 kg","4 × 25 m, 20 kg","50 m after a run"],["Wall balls","5 × 10","5 × 15","Sets of 15–20 after a run"]]],
+     ["ul",["Every station at least once every 10 days.","Wall balls at the end of a session, never fresh.","Weigh your gym’s sled: race loads are 152 kg push and 103 kg pull in total."]]]],
+   ["Strength targets by week 16",[["ul",["Deadlift 5RM about 100–110 kg, bench 5RM about 80 kg (if week 1 starts near 70 kg).","8 strict pull-ups.","2 × 32 kg farmers carry for 100 m unbroken.","Add load when all sets hit the top of the rep range with 1–3 reps in reserve."]]]],
+   ["Food and drink",[["table",[["What","Daily guide"],["Protein","150–170 g in 3–4 meals"],["Carbohydrate","4–6 g/kg on training days (370–550 g)"],["Fluids","Pale-yellow urine, about 2.5–3.5 L"],["Caffeine","One coffee is fine; test 3 mg/kg (about 275 mg) before hard sessions"]]],["ul",["Carb-rich meal 2–3 h before hard sessions, or a banana 45–60 min before.","Over 75 min: 30–60 g carbohydrate per hour, the same products you will race with.","After hard sessions: 30–40 g protein with carbohydrate within an hour."]]]],
+   ["Recovery and warning signs",[["ul",["Readiness check before hard sessions: rate sleep, soreness, mood and motivation 1–5. Two or more at 2 or below = easy aerobic day instead.","Sleep 7–8 h, 8 h+ in heavy weeks, same wake time daily.","Mobility twice a week: hips, ankles, thoracic spine, shoulders.","Sharp pain, pain that worsens as you warm up, or a changed movement: stop and see a physio.","Niggle over 48 h: swap running for bike, row or SkiErg until it settles.","Fever or chest symptoms: no training; return at 50% for two sessions."]]]],
+   ["When life gets busy",[["ul",["Drop session E first, then shorten strength.","Protect C and D, then A.","Never put A and C on consecutive days; keep one full rest day."]]]]
+  ];
+  sections.forEach(function(s,i){
+    var d=el("details"); if(i===0)d.open=true; d.appendChild(el("summary",null,s[0]));
+    var inner=el("div"); s[1].forEach(function(b){inner.appendChild(block(b));}); d.appendChild(inner); g.appendChild(d);
+  });
+}
+function block(b){
+  if(b[0]==="ul"){var u=el("ul"); b[1].forEach(function(t){u.appendChild(el("li",null,t));}); return u;}
+  var wrap=el("div",{cls:"tbl"}), t=el("table");
+  b[1].forEach(function(r,ri){var tr=el("tr"); r.forEach(function(c){tr.appendChild(el(ri===0?"th":"td",null,c));}); t.appendChild(tr);});
+  wrap.appendChild(t); return wrap;
+}
+
+var RACECHK=[
+ ["shoes","Race shoes broken in over 4+ weeks and used in a simulation"],
+ ["gloves","Gloves or tape tested; chalk rules checked"],
+ ["kit","Race kit worn in training at least twice"],
+ ["fuel","Breakfast, gels and fluids tested in long sessions"],
+ ["admin","Timing chip, entry confirmation, ID and partner details sorted"],
+ ["arrive","Arrival time and warm-up agreed with partner"],
+ ["plan","Pacing plan and station split memorised, one cue per station"]
+];
+function renderRace(){
+  var r=document.getElementById("race"); r.textContent="";
+  var secs=[
+   ["Pacing",[["table",[["Segment","Plan"],["Runs 1–3","Race pace or 5–10 s slower; should feel too easy"],["Runs 4–6","Hold race pace even with heavy legs"],["Runs 7–8","Push only if form holds"],["Stations","Steady; nothing all-out before station 6"],["Roxzone","Brisk walk or jog, never stand"]]],["ul",["You are the faster runner: hold the pair back for the first 3 km."]]]],
+   ["Draft station split (test in simulations)",[["table",[["Station","Split"],["SkiErg","Alternate 250 m, you first and last"],["Sled push","Partner takes more"],["Sled pull","Even, swap at 12.5 m"],["Burpee broad jumps","Alternate 10 m"],["Row","Alternate 250 m"],["Farmers carry","Partner more, swap at 25–50 m"],["Lunges","Partner more, swap at 25 m"],["Wall balls","Alternate sets of 10–15"]]],["ul",["Check the official doubles rules before you fix the split."]]]],
+   ["Warm-up (finish 5–10 min before start)",[["ul",["5 min easy jog, 3–4 strides.","Leg swings, hip openers, thoracic rotations, arm circles.","2 × 30 s SkiErg or row at moderate effort, 5 wall balls, one light sled push.","Stay warm, sip water."]]]],
+   ["Fuel",[["ul",["Last 2–3 days: more carbohydrate (about 6–8 g/kg), moderate fibre and fat, nothing new.","Familiar breakfast 3 h before; 300–500 ml fluid with salt over 2 h.","Gel 15–20 min before the start; one or two during (about 25 and 55 min) if tested.","After: carbs, protein, salt and fluid within an hour."]]]]
+  ];
+  secs.forEach(function(s,i){var d=el("details"); if(i===0)d.open=true; d.appendChild(el("summary",null,s[0])); var inner=el("div"); s[1].forEach(function(b){inner.appendChild(block(b));}); d.appendChild(inner); r.appendChild(d);});
+  var c=el("div",{cls:"card"}); c.appendChild(el("h3",null,"Race-day checklist"));
+  RACECHK.forEach(function(it){
+    var row=el("div",{cls:"chk"}); var cb=el("input",{type:"checkbox",id:"rc-"+it[0]}); cb.checked=!!state.race[it[0]];
+    cb.addEventListener("change",function(){if(cb.checked)state.race[it[0]]=1;else delete state.race[it[0]];save();});
+    row.appendChild(cb); row.appendChild(el("label",{"for":"rc-"+it[0]},it[1])); c.appendChild(row);
+  });
+  r.appendChild(c);
+}
+
+function show(id){
+  try{localStorage.setItem(KEY+":tab",id);}catch(e){}
+  document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===id);});
+  document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-selected",String(b.dataset.t===id));});
+}
+document.querySelectorAll("nav button").forEach(function(b){b.addEventListener("click",function(){show(b.dataset.t);toTop();});});
+
+function renderAll(){renderCount();renderTrack();renderWeek();renderPlan();}
+renderAll(); renderData(); renderGuide(); renderRace();
+setStatus("Saved");
+try{var lastTab=localStorage.getItem(KEY+":tab"); if(lastTab&&document.getElementById(lastTab))show(lastTab);}catch(e){}
+
+// Swipe left/right on the week view to change week
+(function(){
+  var sec=document.getElementById("t-week"), x0=null, y0=null;
+  sec.addEventListener("touchstart",function(e){if(e.touches.length!==1)return; var t=e.target; if(t.closest("input,textarea,button"))return; x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  sec.addEventListener("touchend",function(e){
+    if(x0===null)return; var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null;
+    if(Math.abs(dx)>70&&Math.abs(dx)>2*Math.abs(dy)){ if(dx<0&&sel<26)sel++; else if(dx>0&&sel>1)sel--; else return; renderAll(); toTop(); }
+  },{passive:true});
+})();
+
+// Keep "this week" correct when the app stays open, and save before closing
+document.addEventListener("visibilitychange",function(){
+  if(document.visibilityState==="hidden"){flush();return;}
+  var n=wkIndexToday(); if(n!==cur){ if(sel===cur)sel=n; cur=n; } renderAll();
+});
+window.addEventListener("pagehide",flush);
+
+// Backup and restore
+document.getElementById("backupBtn").addEventListener("click",function(){
+  var txt=JSON.stringify({app:"hyrox-hel-2027",v:1,at:new Date().toISOString(),state:state});
+  var box=document.getElementById("copybox"), msg=document.getElementById("backupMsg");
+  var manual=function(){box.value=txt;box.style.display="block";box.style.minHeight="120px";box.focus();box.select();msg.textContent=" Select the backup text in the box above and copy it.";};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){msg.textContent=" Backup copied. Keep it in Notes or send it to yourself.";},manual);else manual();
+});
+document.getElementById("restoreOpen").addEventListener("click",function(){
+  document.getElementById("restoreBox").style.display="block";document.getElementById("restoreBtn").style.display="inline-block";document.getElementById("restoreBox").focus();
+});
+document.getElementById("restoreBtn").addEventListener("click",function(){
+  var msg=document.getElementById("backupMsg");
+  try{
+    var o=JSON.parse(document.getElementById("restoreBox").value.trim());
+    if(!o||o.app!=="hyrox-hel-2027"||!o.state)throw 0;
+    ["done","tests","log","info","dp","race"].forEach(function(k){state[k]=Object.assign({},state[k]||{},o.state[k]||{});});
+    save(); renderAll(); renderData(); renderRace();
+    msg.textContent=" Backup restored."; document.getElementById("restoreBox").value="";
+  }catch(e){msg.textContent=" That text isn’t a backup from this app. Copy the whole backup and try again.";}
+});
+
+// Offline support when installed from a self-hosted copy (not inside claude.ai)
+if("serviceWorker" in navigator && (location.protocol==="https:"||location.hostname==="localhost") && window.top===window.self && !/(^|\.)claude\.ai$/.test(location.hostname)){
+  window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});
+}
+
+// Sync across devices when available
+(async function(){
+  try{
+    if(!window.claude||!window.claude.use) return;
+    var db=await window.claude.use("db"), user=await window.claude.use("user");
+    if(!db||!user) return;
+    var uid=await user.id(); if(!uid) return;
+    docRef=db.doc("data/users/"+uid+"/state");
+    var snap=await docRef.get();
+    if(snap.exists){
+      var remote=snap.data()||{};
+      ["done","tests","log","info","dp","race"].forEach(function(k){state[k]=Object.assign({},state[k]||{},remote[k]||{});});
+      try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+      renderAll(); renderData(); renderRace();
+      setStatus("Synced");
+    } else if(Object.keys(state.done).length||Object.keys(state.tests).length){ save(); }
+    else setStatus("Synced");
+  }catch(e){ docRef=null; }
+})();
+})();
+</script>
+</body>
+</html>
