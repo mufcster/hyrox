@@ -188,6 +188,7 @@ h2.sec{font-size:26px;margin:18px 0 4px}
     <p class="note">Your ticks and results are saved automatically. A backup lets you move them to another browser or a home-screen copy of the app.</p>
     <div class="btnrow"><button class="btn" id="backupBtn">Copy backup</button><button class="btn" id="restoreOpen">Restore from backup</button></div>
     <span class="note" id="backupMsg"></span>
+    <p class="note">App version: 24 Oct 2026, baseline update</p>
     <textarea id="restoreBox" aria-label="Paste a backup here" placeholder="Paste a backup here, then tap Restore"></textarea>
     <button class="btn primary" id="restoreBtn" style="display:none;margin-top:8px">Restore</button>
   </div>
@@ -220,33 +221,33 @@ var RACE = new Date(2027,3,16);
 var PH = {F:{name:"Foundation",c:"var(--found)"},B:{name:"Build",c:"var(--build)"},S:{name:"Specific",c:"var(--spec)"},T:{name:"Taper and race",c:"var(--taper)"}};
 
 var BTXT = {
-  F:"Pull-ups or lat pulldown 3 × 8–10, deadlift 3 × 6–8, bench or dumbbell press 3 × 8–10, overhead press 3 × 8, one-arm row 3 × 10, split squat 3 × 8 per leg, farmers carry 3 × 40 m, 5–8 min core.",
-  B:"Pull-ups 4 × 5–6 (weighted when 10 are clean), deadlift 4 × 4–6, bench 4 × 5–6, overhead press 4 × 6, row 4 × 8, front or split squat 3 × 6, heavier farmers carry 4 × 40 m, anti-rotation core.",
-  S:"Pull-ups 3 × 5, deadlift 3 × 3–5, bench 3 × 5, overhead press 3 × 5, row 3 × 8, split squat 2 × 8 per leg, race-weight carries after short runs, 5 min core.",
+  F:"Pull-ups or lat pulldown 3 × 8–10, deadlift 3 × 6–8, bench or dumbbell press 3 × 8–10, overhead press 3 × 8, one-arm row 3 × 10, split squat 3 × 8 per leg, farmers carry 3 × 40 m, dead hangs 3 × 30 s, 5–8 min core.",
+  B:"Pull-ups 4 × 5–6 (weighted when 10 are clean), deadlift 4 × 4–6, bench 4 × 5–6, overhead press 4 × 6, row 4 × 8, front or split squat 3 × 6, heavier farmers carry 4 × 40 m, dead hangs 3 × 45 s, anti-rotation core.",
+  S:"Pull-ups 3 × 5, deadlift 3 × 3–5, bench 3 × 5, overhead press 3 × 5, row 3 × 8, split squat 2 × 8 per leg, race-weight carries after short runs, dead hangs 2 × 45 s, 5 min core.",
   T:"Short version: 2–3 sets of the main pull, push and hinge at moderate weight. Nothing to failure."
 };
-var ETXT = "30–40 min easy run (about 7:30–8:00/km) plus 10–15 min mobility, or an Engine or Core & Mobility class. Skip it when tired.";
+var ETXT = "30–40 min easy run (about 6:50–7:20/km) plus 10–15 min mobility, or an Engine or Core & Mobility class. Skip it when tired.";
 
 // n, phase, km, light, focus, A, C, Dmin
 var W = [
- [1,"F",14,0,"Baseline test week. Spread the tests out, keep everything else easy.",null,null,null],
- [2,"F",16,0,"Station technique week.","6 × 2 min brisk (about 6:15–6:30/km), 2 min easy jog between. 10 min easy before and after.","Technique on every station at light load: SkiErg, sled push and pull, row, wall balls, lunges. Foundational class is ideal.",40],
+ [1,"F",14,0,"Baseline mostly done (strength, stations, body scan). Remaining: the 5K time trial. Otherwise easy only.",null,null,null],
+ [2,"F",16,0,"Station technique week.","6 × 2 min brisk (about 6:00–6:15/km), 2 min easy jog between. 10 min easy before and after.","Technique on every station at light load: SkiErg, sled push and pull, row, wall balls, lunges. Foundational class is ideal.",40],
  [3,"F",18,0,"More tempo time, first light sled work.","6 × 3 min brisk, 2 min easy jog between.","Technique plus 4 × 25 m sled push at about 50% load and 4 × 250 m SkiErg.",50],
  [4,"F",14,1,"Lighter week: let the body catch up.","4 × 2 min brisk, relaxed.","Technique only, light loads, no fatigue.",40],
- [5,"F",19,0,"Tempo blocks and first run-plus-station rounds.","4 × 5 min tempo (6:15–6:30/km), 2 min jog.","5 rounds: 500 m run + one station at light load (rotate stations).",55],
+ [5,"F",19,0,"Tempo blocks and first run-plus-station rounds.","4 × 5 min tempo (6:00–6:15/km), 2 min jog.","5 rounds: 500 m run + one station at light load (rotate stations).",55],
  [6,"F",21,0,"Heavier carries and sled pulls; strength weights up.","4 × 5 min tempo, 90 s jog.","5 rounds: 500 m run + farmers carry or sled pull at moderate load.",60],
  [7,"F",23,0,"Longest tempo of the phase.","3 × 8 min tempo, 2 min jog.","8 rounds: 400 m run + station at about 70% of race load.",65],
  [8,"F",17,1,"Lighter week with Checkpoint 1.","5K time trial (checkpoint).","Benchmarks: 100 wall balls for time and 50 m sled push; record both.",45],
- [9,"B",24,0,"1 km repeats and first full 1 km runs after stations.","5 × 1 km at about 5:55–6:05/km, 90 s jog.","4 rounds: 1 km run + station at 70–80% of race load.",70],
- [10,"B",26,0,"Christmas week. Keep A and D; one strength session is enough.","5 × 1 km at 5:55–6:05/km.","4–5 rounds: 1 km run + station.",70],
- [11,"B",28,0,"Biggest week of the block; heavy upper-body block begins.","6 × 1 km at 5:55–6:05/km, 90 s jog.","5 rounds: 1 km run + station at about 80% load.",80],
+ [9,"B",24,0,"1 km repeats and first full 1 km runs after stations.","5 × 1 km at about 5:40–5:50/km, 90 s jog.","4 rounds: 1 km run + station at 70–80% of race load.",70],
+ [10,"B",26,0,"Christmas week. Keep A and D; one strength session is enough.","5 × 1 km at 5:40–5:50/km.","4–5 rounds: 1 km run + station.",70],
+ [11,"B",28,0,"Biggest week of the block; heavy upper-body block begins.","6 × 1 km at 5:40–5:50/km, 90 s jog.","5 rounds: 1 km run + station at about 80% load.",80],
  [12,"B",21,1,"Lighter week: mobility and technique.","4 × 1 km relaxed.","Light technique, all stations.",60],
- [13,"B",29,0,"Longer threshold blocks.","3 × 2 km at about 6:05–6:15/km, 2 min jog.","6 rounds: 1 km run + station.",80],
- [14,"B",31,0,"Long run with a steady finish; heavy sled and carries.","3 × 2 km at 6:05–6:15/km.","Heavy sled push and pull plus 2 × 24–32 kg carries, intervals with short runs.",85],
- [15,"B",33,0,"First taste of all eight stations in one session.","6 × 1 km at about 5:50–6:00/km, 90 s jog.","All 8 stations at about 50% volume, 500 m–1 km run between.",85],
+ [13,"B",29,0,"Longer threshold blocks.","3 × 2 km at about 5:50–6:00/km, 2 min jog.","6 rounds: 1 km run + station.",80],
+ [14,"B",31,0,"Long run with a steady finish; heavy sled and carries.","3 × 2 km at 5:50–6:00/km.","Heavy sled push and pull plus 2 × 24–32 kg carries, intervals with short runs.",85],
+ [15,"B",33,0,"First taste of all eight stations in one session.","6 × 1 km at about 5:35–5:45/km, 90 s jog.","All 8 stations at about 50% volume, 500 m–1 km run between.",85],
  [16,"B",24,1,"Lighter week with Checkpoint 2.","10K time trial (checkpoint).","Station benchmarks: 1,000 m SkiErg, 1,000 m row, 50 m sled push, 100 wall balls.",60],
- [17,"S",32,0,"Half simulation: 4 runs + 4 stations at your doubles share.","6 × 1 km at 5:50–6:00/km.","HALF SIMULATION: runs 1–4 and stations 1–4 at race load and your planned share. Record splits.",75],
- [18,"S",34,0,"Race-pace running; wall ball and lunge fatigue.","8 × 1 km at race pace (about 6:15–6:30/km), 60 s rest.","Lunges and wall balls after 1 km runs, 4 rounds.",80],
+ [17,"S",32,0,"Half simulation: 4 runs + 4 stations at your doubles share.","6 × 1 km at 5:35–5:45/km.","HALF SIMULATION: runs 1–4 and stations 1–4 at race load and your planned share. Record splits.",75],
+ [18,"S",34,0,"Race-pace running; wall ball and lunge fatigue.","8 × 1 km at race pace (about 6:05–6:20/km), 60 s rest.","Lunges and wall balls after 1 km runs, 4 rounds.",80],
  [19,"S",36,0,"Peak week.","8 × 1 km at race pace, 60 s rest.","Sled, carry and wall ball circuit with 1 km runs.",90],
  [20,"S",26,1,"Lighter week before the full simulation.","5 × 1 km at race pace.","Light technique.",60],
  [21,"S",35,0,"Full simulation, ideally with your partner.","4 × 1 km at race pace, easy otherwise.","FULL SIMULATION: all 8 runs and your share of every station. Practise fuelling and transitions. Record splits.",70],
@@ -279,7 +280,7 @@ function weekSessions(w){
     {k:"B",t:"Strength",d:"Mon",x:BTXT[w[1]]+(w[3]?" Lighter week: drop one set per exercise.":""),ess:1,cls:"Strength class or gym"},
     {k:"A",t:"Run quality",d:"Tue",x:w[5],ess:1,cls:"Run class or solo"},
     {k:"C",t:"HYROX-specific",d:"Thu",x:w[6],ess:1,cls:"Foundational / Power class or solo"},
-    {k:"D",t:"Long easy run",d:"Sat or Sun",x:w[7]+" min at conversational pace (about 7:30–8:00/km)"+(n===14?", last 15 min steady (about 7:00–7:15/km).":". Walk breaks are fine."),ess:1,cls:"Outdoors"},
+    {k:"D",t:"Long easy run",d:"Sat or Sun",x:w[7]+" min at conversational pace (about 6:50–7:20/km)"+(n===14?", last 15 min steady (about 6:30–6:45/km).":". Walk breaks are fine."),ess:1,cls:"Outdoors"},
     {k:"E",t:"Easy run and mobility",d:"Wed or Fri",x:ETXT,ess:0,cls:"Engine or Core & Mobility class"}
   ];
 }
@@ -287,16 +288,18 @@ function weekSessions(w){
 var TESTS = [
  {id:"5k",l:"5K time trial",t:"Under 26:30 by wk 16",w:[1,8,16]},
  {id:"5khr",l:"5K avg / max HR",t:"",w:[1,8,16]},
- {id:"10k",l:"10K time trial",t:"Under 1:03:00",w:[16]},
- {id:"dl",l:"Deadlift 5RM (kg)",t:"100–110",w:[1,8,16]},
+ {id:"10k",l:"10K time trial",t:"Under 1:00:00",w:[16]},
+ {id:"dl",l:"Deadlift 5RM (kg)",t:"About 110",w:[1,8,16]},
  {id:"bp",l:"Bench 5RM (kg)",t:"About 80",w:[1,8,16]},
  {id:"sq",l:"Squat 5RM (kg)",t:"",w:[1,8,16]},
- {id:"pu",l:"Strict pull-ups",t:"8",w:[1,8,16]},
+ {id:"pu",l:"Strict pull-ups",t:"12",w:[1,8,16]},
+ {id:"dbp",l:"DB shoulder press (kg × reps)",t:"24 × 10",w:[1,16]},
+ {id:"grip",l:"Grip strength L / R (kg)",t:"Both above 41",w:[1,16]},
  {id:"ski",l:"1,000 m SkiErg",t:"Improve 5–8%",w:[1,8,16]},
  {id:"row",l:"1,000 m row",t:"Improve 5–8%",w:[1,8,16]},
  {id:"sled",l:"50 m sled push",t:"",w:[1,8,16]},
  {id:"sledkg",l:"Sled load used (kg)",t:"Race: 152",w:[1,8,16]},
- {id:"wb",l:"100 wall balls",t:"Under 6:00",w:[1,8,16]},
+ {id:"wb",l:"100 wall balls",t:"Under 5:30",w:[1,8,16]},
  {id:"wt",l:"Body weight (kg)",t:"Stable",w:[1,8,16]},
  {id:"bf",l:"Body fat % (scan)",t:"",w:[1,16]},
  {id:"mm",l:"Muscle mass kg (scan)",t:"",w:[1,16]},
@@ -494,12 +497,12 @@ function renderGuide(){
   var g=document.getElementById("guide"); g.textContent="";
   var sections=[
    ["Running paces (reset at each checkpoint)",[
-     ["table",[["Effort","Feel","Pace"],["Easy","Full sentences","7:30–8:00/km"],["Steady","Comfortable, purposeful","7:00–7:15/km"],["Tempo","Short sentences","6:15–6:30/km"],["Interval","Hard, 1 km repeats","5:50–6:00/km"],["Race pace","Goal B","6:25–6:40/km"]]],
+     ["table",[["Effort","Feel","Pace"],["Easy","Full sentences","6:50–7:20/km"],["Steady","Comfortable, purposeful","6:30–6:45/km"],["Tempo","Short sentences","6:00–6:15/km"],["Interval","Hard, 1 km repeats","5:35–5:45/km"],["Race pace","Provisional","6:05–6:20/km"]]],
      ["ul",["Add 4–6 × 20 s relaxed strides after one easy run a week.","Cadence about 170–180 steps/min, landing under the hips.","After a station: run the first 200–300 m at the pace you can hold for the whole km."]]]],
    ["Station progressions",[
      ["table",[["Station","Phase 1","Phase 2","Phase 3"],["SkiErg","4 × 250 m easy-mod","4 × 500 m target pace","1,000 m after a run"],["Sled push","4 × 25 m at 50%","4 × 25 m at 152 kg","2 × 25 m after 1 km"],["Sled pull","4 × 25 m light","4 × 25 m at 80–100%","2 × 25 m tired grip"],["Burpee broad jumps","4 × 10 m","4 × 20 m","40 m then run"],["Row","4 × 250 m","2 × 500 m target","1,000 m after a run"],["Farmers carry","4 × 50 m, 2 × 20 kg","4 × 50 m, 2 × 24 kg+","100 m unbroken"],["Sandbag lunges","4 × 25 m, 10–15 kg","4 × 25 m, 20 kg","50 m after a run"],["Wall balls","5 × 10","5 × 15","Sets of 15–20 after a run"]]],
      ["ul",["Every station at least once every 10 days.","Wall balls at the end of a session, never fresh.","Weigh your gym’s sled: race loads are 152 kg push and 103 kg pull in total."]]]],
-   ["Strength targets by week 16",[["ul",["Deadlift 5RM about 100–110 kg, bench 5RM about 80 kg (if week 1 starts near 70 kg).","8 strict pull-ups.","2 × 32 kg farmers carry for 100 m unbroken.","Add load when all sets hit the top of the rep range with 1–3 reps in reserve."]]]],
+   ["Strength targets by week 16",[["ul",["Deadlift 5RM about 110 kg (from 90), bench 5RM about 80 kg (from 70).","12 strict pull-ups, or 8 with 10 kg added.","2 × 24 kg farmers carry for 100 m unbroken, then 2 × 32 kg for 50 m.","Grip is your weak link: dead hangs in every strength session.","Add load when all sets hit the top of the rep range with 1–3 reps in reserve."]]]],
    ["Food and drink",[["table",[["What","Daily guide"],["Protein","150–170 g in 3–4 meals"],["Carbohydrate","4–6 g/kg on training days (370–550 g)"],["Fluids","Pale-yellow urine, about 2.5–3.5 L"],["Caffeine","One coffee is fine; test 3 mg/kg (about 275 mg) before hard sessions"]]],["ul",["Carb-rich meal 2–3 h before hard sessions, or a banana 45–60 min before.","Over 75 min: 30–60 g carbohydrate per hour, the same products you will race with.","After hard sessions: 30–40 g protein with carbohydrate within an hour."]]]],
    ["Recovery and warning signs",[["ul",["Readiness check before hard sessions: rate sleep, soreness, mood and motivation 1–5. Two or more at 2 or below = easy aerobic day instead.","Sleep 7–8 h, 8 h+ in heavy weeks, same wake time daily.","Mobility twice a week: hips, ankles, thoracic spine, shoulders.","Sharp pain, pain that worsens as you warm up, or a changed movement: stop and see a physio.","Niggle over 48 h: swap running for bike, row or SkiErg until it settles.","Fever or chest symptoms: no training; return at 50% for two sessions."]]]],
    ["When life gets busy",[["ul",["Drop session E first, then shorten strength.","Protect C and D, then A.","Never put A and C on consecutive days; keep one full rest day."]]]]
@@ -551,6 +554,13 @@ function show(id){
 document.querySelectorAll("nav button").forEach(function(b){b.addEventListener("click",function(){show(b.dataset.t);toTop();});});
 
 function renderAll(){renderCount();renderTrack();renderWeek();renderPlan();}
+if(!state.seed1){
+  ["t2","t3","t4","t5"].forEach(function(k){state.done["w1-"+k]=1;});
+  ["d2","d3","d4","d5"].forEach(function(k){state.dp[k]=1;});
+  var SEED={"5k@1":"27:52 (June)","dl@1":"90","bp@1":"70","sq@1":"80","pu@1":"8","dbp@1":"22.5 × 10","grip@1":"L 39.8 / R 42.6","ski@1":"4:22","row@1":"3:42","sled@1":"1:07","sledkg@1":"152","wb@1":"6:39","wt@1":"91.9","bf@1":"18.4","mm@1":"42.9"};
+  Object.keys(SEED).forEach(function(k){if(!state.tests[k])state.tests[k]=SEED[k];});
+  state.seed1=1; try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+}
 renderAll(); renderData(); renderGuide(); renderRace();
 setStatus("Saved");
 try{var lastTab=localStorage.getItem(KEY+":tab"); if(lastTab&&document.getElementById(lastTab))show(lastTab);}catch(e){}

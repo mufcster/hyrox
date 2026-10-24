@@ -1,5 +1,5 @@
 // Offline cache for the HYROX training app. Bump VERSION when you upload a new index.html.
-const VERSION = "hyrox-v2";
+const VERSION = "hyrox-v3";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -13,7 +13,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   // App page: network first so updates arrive, cache as offline fallback
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req).then(r => { const c = r.clone(); caches.open(VERSION).then(x => x.put("./index.html", c)); return r; })
+    e.respondWith(fetch(req.url, { cache: "no-cache" }).then(r => { const c = r.clone(); caches.open(VERSION).then(x => x.put("./index.html", c)); return r; })
       .catch(() => caches.match("./index.html")));
     return;
   }
