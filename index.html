@@ -188,7 +188,7 @@ h2.sec{font-size:26px;margin:18px 0 4px}
     <p class="note">Your ticks and results are saved automatically. A backup lets you move them to another browser or a home-screen copy of the app.</p>
     <div class="btnrow"><button class="btn" id="backupBtn">Copy backup</button><button class="btn" id="restoreOpen">Restore from backup</button></div>
     <span class="note" id="backupMsg"></span>
-    <p class="note">App version: 24 Oct 2026, baseline update</p>
+    <p class="note">App version: 2 Nov 2026, Achilles update</p>
     <textarea id="restoreBox" aria-label="Paste a backup here" placeholder="Paste a backup here, then tap Restore"></textarea>
     <button class="btn primary" id="restoreBtn" style="display:none;margin-top:8px">Restore</button>
   </div>
@@ -232,11 +232,11 @@ var ETXT = "30–40 min easy run (about 6:50–7:20/km) plus 10–15 min mobilit
 var W = [
  [1,"F",14,0,"Baseline mostly done (strength, stations, body scan). Remaining: the 5K time trial. Otherwise easy only.",null,null,null],
  [2,"F",16,0,"Station technique week.","6 × 2 min brisk (about 6:00–6:15/km), 2 min easy jog between. 10 min easy before and after.","Technique on every station at light load: SkiErg, sled push and pull, row, wall balls, lunges. Foundational class is ideal.",40],
- [3,"F",18,0,"More tempo time, first light sled work.","6 × 3 min brisk, 2 min easy jog between.","Technique plus 4 × 25 m sled push at about 50% load and 4 × 250 m SkiErg.",50],
- [4,"F",14,1,"Lighter week: let the body catch up.","4 × 2 min brisk, relaxed.","Technique only, light loads, no fatigue.",40],
- [5,"F",19,0,"Tempo blocks and first run-plus-station rounds.","4 × 5 min tempo (6:00–6:15/km), 2 min jog.","5 rounds: 500 m run + one station at light load (rotate stations).",55],
- [6,"F",21,0,"Heavier carries and sled pulls; strength weights up.","4 × 5 min tempo, 90 s jog.","5 rounds: 500 m run + farmers carry or sled pull at moderate load.",60],
- [7,"F",23,0,"Longest tempo of the phase.","3 × 8 min tempo, 2 min jog.","8 rounds: 400 m run + station at about 70% of race load.",65],
+ [3,"F",10,0,"Achilles week: easy running only, hard efforts on the rower or SkiErg, calf strength 3 times.",null,null,null],
+ [4,"F",12,1,"Lighter week, still easy running only. Two pain-free weeks unlock the 5K test in week 5.",null,null,null],
+ [5,"F",16,0,"If easy runs were pain-free for 2 weeks: 5K test this week. If not: repeat week 4 and see a physio.","5K time trial, only if the Achilles has been pain-free on easy runs for 2 weeks. Otherwise: 6 × 3 min hard on the rower or SkiErg.","5 rounds: 500 m easy run + one station at light load. Still no jumps.",40],
+ [6,"F",19,0,"Heavier carries and sled pulls; strength weights up. Tempo running returns if the Achilles is fine.","4 × 5 min tempo (6:00–6:15/km), 90 s jog.","5 rounds: 500 m run + farmers carry or sled pull at moderate load.",50],
+ [7,"F",21,0,"Longest tempo of the phase. Jumps return gradually if pain-free.","3 × 8 min tempo, 2 min jog.","8 rounds: 400 m run + station at about 70% of race load.",60],
  [8,"F",17,1,"Lighter week with Checkpoint 1.","5K time trial (checkpoint).","Benchmarks: 100 wall balls for time and 50 m sled push; record both.",45],
  [9,"B",24,0,"1 km repeats and first full 1 km runs after stations.","5 × 1 km at about 5:40–5:50/km, 90 s jog.","4 rounds: 1 km run + station at 70–80% of race load.",70],
  [10,"B",26,0,"Christmas week. Keep A and D; one strength session is enough.","5 × 1 km at 5:40–5:50/km.","4–5 rounds: 1 km run + station.",70],
@@ -275,6 +275,17 @@ var W26S = [
 function weekSessions(w){
   var n=w[0];
   if(n===1) return W1S;
+  if(n===3||n===4){
+    var lt=n===4;
+    return [
+      {k:"B",t:"Strength + calf raises",d:"Mon",x:BTXT.F+(lt?" Lighter week: drop one set per exercise.":"")+" Add slow calf raises: 3–4 × 15, straight and bent knee, 3 s up and 3 s down.",ess:1,cls:"Strength class or gym"},
+      {k:"A",t:"Hard intervals on rower or SkiErg",d:"Tue",x:(lt?"5":"6")+" × 3 min hard on the rower or SkiErg (alternate), 2 min easy between. 10 min easy before and after. No running intervals this week.",ess:1,cls:"Gym, solo"},
+      {k:"R1",t:"Easy run 1",d:"Wed",x:(lt?"25–30":"20–25")+" min easy (about 6:50–7:20/km), flat and soft-ish ground. Pain rule: up to 3/10 during, settles within 24 h, no extra stiffness next morning.",ess:1,cls:"Outdoors"},
+      {k:"C",t:"HYROX class, no jumps",d:"Thu",x:"Foundational or Power class. Skip burpee broad jumps, box jumps and skipping (swap for row or SkiErg). Go lighter on sled push and lunges.",ess:1,cls:"Foundational or Power class"},
+      {k:"D",t:"Easy run 2",d:"Sat or Sun",x:(lt?"30–35":"25–30")+" min easy, same pain rule. If the Achilles complained after run 1, swap this for 30 min on the bike or rower.",ess:1,cls:"Outdoors"},
+      {k:"CALF",t:"Calf and Achilles strength, 3 times this week",d:"any 3 days",x:"Slow calf raises with straight and bent knee, 3–4 × 15, adding weight when easy. Tick when all 3 are done.",ess:1,cls:"Home or gym"}
+    ];
+  }
   if(n===26) return W26S;
   return [
     {k:"B",t:"Strength",d:"Mon",x:BTXT[w[1]]+(w[3]?" Lighter week: drop one set per exercise.":""),ess:1,cls:"Strength class or gym"},
@@ -505,6 +516,7 @@ function renderGuide(){
    ["Strength targets by week 16",[["ul",["Deadlift 5RM about 110 kg (from 90), bench 5RM about 80 kg (from 70).","12 strict pull-ups, or 8 with 10 kg added.","2 × 24 kg farmers carry for 100 m unbroken, then 2 × 32 kg for 50 m.","Grip is your weak link: dead hangs in every strength session.","Add load when all sets hit the top of the rep range with 1–3 reps in reserve."]]]],
    ["Food and drink",[["table",[["What","Daily guide"],["Protein","150–170 g in 3–4 meals"],["Carbohydrate","4–6 g/kg on training days (370–550 g)"],["Fluids","Pale-yellow urine, about 2.5–3.5 L"],["Caffeine","One coffee is fine; test 3 mg/kg (about 275 mg) before hard sessions"]]],["ul",["Carb-rich meal 2–3 h before hard sessions, or a banana 45–60 min before.","Over 75 min: 30–60 g carbohydrate per hour, the same products you will race with.","After hard sessions: 30–40 g protein with carbohydrate within an hour."]]]],
    ["Recovery and warning signs",[["ul",["Readiness check before hard sessions: rate sleep, soreness, mood and motivation 1–5. Two or more at 2 or below = easy aerobic day instead.","Sleep 7–8 h, 8 h+ in heavy weeks, same wake time daily.","Mobility twice a week: hips, ankles, thoracic spine, shoulders.","Sharp pain, pain that worsens as you warm up, or a changed movement: stop and see a physio.","Niggle over 48 h: swap running for bike, row or SkiErg until it settles.","Fever or chest symptoms: no training; return at 50% for two sessions."]]]],
+   ["Achilles: return to running",[["ul",["Easy running first; the 5K test and fast running only after 2 weeks of pain-free easy runs.","Pain rule: up to 3/10 during a run, settles within 24 h, no extra stiffness the next morning. If any fails, go back a step for a few days.","Calf raises 3 times a week: slow, straight and bent knee, 3–4 × 15, adding weight as it gets easy.","No jumping (burpee broad jumps, box jumps, skipping) until running is pain-free; lighter sled push and lunges.","See a physio if pain lasts beyond 1–2 weeks, is worse in the morning, or the tendon is swollen. Sudden sharp pain or a pop: stop and get it checked straight away."]]]],
    ["When life gets busy",[["ul",["Drop session E first, then shorten strength.","Protect C and D, then A.","Never put A and C on consecutive days; keep one full rest day."]]]]
   ];
   sections.forEach(function(s,i){
